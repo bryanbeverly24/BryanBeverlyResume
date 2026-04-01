@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ r.name }} — Résumé</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0b1623;
+      --navy2:   #152236;
+      --gold:    #c9943a;
+      --gold2:   #e8b865;
+      --slate:   #8a9bb0;
+      --paper:   #f7f5f2;
+      --white:   #ffffff;
+      --border:  rgba(201,148,58,.18);
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'IBM Plex Sans', system-ui, sans-serif;
+      --mono:    'IBM Plex Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--paper);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Subtle dot grid background ─────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, rgba(201,148,58,.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Top accent bar ──────────────────────────────────────── */
+    .top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+      position: relative; z-index: 10;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 48px 100px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px 48px;
+      align-items: end;
+      padding-bottom: 44px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 52px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .name {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 6vw, 4.4rem);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+
+    .name span {
+      color: var(--gold);
+    }
+
+    .job-title {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--slate);
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    .contact-block {
+      text-align: right;
+    }
+
+    .contact-block a,
+    .contact-block span {
+      display: block;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .06em;
+      color: var(--slate);
+      text-decoration: none;
+      line-height: 2;
+      transition: color .2s;
+    }
+
+    .contact-block a:hover { color: var(--gold2); }
+
+    /* ── Section ─────────────────────────────────────────────── */
+    section {
+      margin-bottom: 52px;
+      animation: fadeUp .6s ease both;
+    }
+
+    section:nth-child(2) { animation-delay: .08s; }
+    section:nth-child(3) { animation-delay: .16s; }
+    section:nth-child(4) { animation-delay: .24s; }
+    section:nth-child(5) { animation-delay: .32s; }
+    section:nth-child(6) { animation-delay: .40s; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Summary ─────────────────────────────────────────────── */
+    .summary-text {
+      font-size: .97rem;
+      font-weight: 300;
+      color: #c8d0da;
+      max-width: 680px;
+      line-height: 1.85;
+    }
+
+    /* ── Experience ──────────────────────────────────────────── */
+    .job {
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      position: relative;
+    }
+
+    .job:first-of-type { padding-top: 0; }
+    .job:last-of-type  { border-bottom: none; }
+
+    .job-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 24px;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .job-company {
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+    }
+
+    .job-period {
+      font-family: var(--mono);
+      font-size: .67rem;
+      letter-spacing: .1em;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    .job-role {
+      font-size: .88rem;
+      font-style: italic;
+      color: var(--slate);
+      margin-bottom: 6px;
+    }
+
+    .job-location {
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      color: rgba(138,155,176,.5);
+    }
+
+    .job-context {
+      font-size: .8rem;
+      color: rgba(201,148,58,.65);
+      margin: 10px 0 14px;
+      font-style: italic;
+      font-family: var(--sans);
+    }
+
+    .job-bullets {
+      list-style: none;
+      padding: 0;
+    }
+
+    .job-bullets li {
+      font-size: .88rem;
+      font-weight: 300;
+      color: #b8c4d0;
+      padding-left: 22px;
+      position: relative;
+      margin-bottom: 7px;
+      line-height: 1.7;
+    }
+
+    .job-bullets li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-size: .7rem;
+      top: 3px;
+    }
+
+    /* ── Education ────────────────────────────────────────────── */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .edu-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 22px 24px;
+    }
+
+    .edu-school {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .edu-degree {
+      font-size: .88rem;
+      color: var(--gold2);
+      margin-bottom: 6px;
+    }
+
+    .edu-detail {
+      font-size: .78rem;
+      color: var(--slate);
+      font-style: italic;
+    }
+
+    .edu-period {
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .1em;
+      color: rgba(138,155,176,.5);
+      margin-top: 10px;
+    }
+
+    /* ── Awards ───────────────────────────────────────────────── */
+    .award-list { list-style: none; }
+
+    .award-list li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      font-size: .9rem;
+      color: #c8d0da;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .award-list li:last-child { border-bottom: none; }
+
+    .award-star {
+      color: var(--gold);
+      font-size: .85rem;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(138,155,176,.35);
+    }
+
+    /* ── Animations ───────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Print ─────────────────────────────────────────────────── */
+    @media print {
+      body { background: white; color: black; }
+      body::before { display: none; }
+      .top-bar { display: none; }
+      section, header { animation: none !important; }
+    }
+
+    /* ── Mobile ─────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .page { padding: 36px 20px 72px; }
+      header { grid-template-columns: 1fr; }
+      .contact-block { text-align: left; }
+      .job-header { grid-template-columns: 1fr; }
+      .edu-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="top-bar"></div>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div>
+      <h1 class="name">Bryan <span>Beverly</span></h1>
+      <p class="job-title">{{ r.title }}</p>
+      <p class="tagline">{{ r.tagline }}</p>
+    </div>
+    <nav class="contact-block">
+      <a href="mailto:{{ r.email }}">{{ r.email }}</a>
+      <span>{{ r.phone }}</span>
+      <span>{{ r.location }}</span>
+      <a href="https://{{ r.linkedin }}" target="_blank">{{ r.linkedin }}</a>
+    </nav>
+  </header>
+
+  <!-- Summary -->
+  <section>
+    <h2 class="section-label">Executive Profile</h2>
+    <p class="summary-text">{{ r.summary }}</p>
+  </section>
+
+  <!-- Experience -->
+  <section>
+    <h2 class="section-label">Professional Experience</h2>
+    {% for job in r.experience %}
+    <article class="job">
+      <div class="job-header">
+        <div class="job-company">{{ job.company }}</div>
+        <div class="job-period">{{ job.period }}</div>
+      </div>
+      <div class="job-role">{{ job.role }}</div>
+      <div class="job-location">{{ job.location }}</div>
+      {% if job.context %}
+      <p class="job-context">{{ job.context }}</p>
+      {% endif %}
+      <ul class="job-bullets">
+        {% for b in job.bullets %}
+        <li>{{ b }}</li>
+        {% endfor %}
+      </ul>
+    </article>
+    {% endfor %}
+  </section>
+
+  <!-- Education -->
+  <section>
+    <h2 class="section-label">Education</h2>
+    <div class="edu-grid">
+      {% for edu in r.education %}
+      <div class="edu-card">
+        <div class="edu-school">{{ edu.school }}</div>
+        <div class="edu-degree">{{ edu.degree }}</div>
+        <div class="edu-detail">{{ edu.detail }}</div>
+        <div class="edu-period">{{ edu.period }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Awards & Leadership -->
+  <section>
+    <h2 class="section-label">Awards &amp; Leadership</h2>
+    <ul class="award-list">
+      {% for a in r.awards %}
+      <li><span class="award-star">★</span>{{ a }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span>Bryan Beverly</span>
+    <span>{{ r.location }}</span>
+    <span>{{ r.email }}</span>
+  </footer>
+
+</div>
+</body>
+</html>
